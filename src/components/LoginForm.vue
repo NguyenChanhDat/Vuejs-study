@@ -1,10 +1,7 @@
 <script setup lang="ts">
+import type { LoginFormData } from '@/types/User.type'
 import { ref } from 'vue'
-
-type LoginFormData = {
-  username: string
-  password: string
-}
+import { userApi } from '@/hooks/User.api'
 
 const userInformation = ref<LoginFormData>({
   username: '',
@@ -13,8 +10,7 @@ const userInformation = ref<LoginFormData>({
 
 const handleSubmit = (e: Event) => {
   e.preventDefault()
-  console.log('Username:', userInformation.value.username)
-  console.log('Password:', userInformation.value.password)
+  userApi.login(userInformation.value)
 }
 </script>
 
