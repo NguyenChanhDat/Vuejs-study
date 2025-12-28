@@ -11,13 +11,16 @@ const newUser = reactive<CreateUserFormData>({
 })
 
 const { email, memberType, password, username } = toRefs(newUser)
+const passwordConfirm = reactive<{ value: string }>({ value: '' })
+const isShowError = reactive<{ value: boolean }>({ value: false })
 
 const handleSubmit = async (e: Event) => {
   e.preventDefault()
-  console.log('Username:', username.value)
-  console.log('Email:', email.value)
-  console.log('Password:', password.value)
-  console.log('Member Type:', memberType.value)
+  if (password.value !== passwordConfirm.value) {
+    isShowError.value = true
+    return
+  }
+  isShowError.value = false
   await userApi.createUser(newUser)
 }
 </script>
@@ -38,6 +41,15 @@ const handleSubmit = async (e: Event) => {
       <input v-model="password" type="password" id="password" name="password" />
     </div>
     <div>
+      <label for="passwordConfirm">Confirm Password:</label>
+      <input
+        v-model="passwordConfirm.value"
+        type="password"
+        id="passwordConfirm"
+        name="passwordConfirm"
+      />
+    </div>
+    <div>
       <label for="memberType">Member Type:</label>
       <select v-model="memberType" id="memberType" name="memberType">
         <option value="Basic">Basic</option>
@@ -47,4 +59,11 @@ const handleSubmit = async (e: Event) => {
     </div>
     <button @click="handleSubmit" type="submit">Create User</button>
   </form>
+
+  <div v-if="isShowError.value" style="color: red; margin-top: 1em">
+    <ul>
+      <h2>Error Messages</h2>
+      <li>Passwords do not match.</li>
+    </ul>
+  </div>
 </template>
